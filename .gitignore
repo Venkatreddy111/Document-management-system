@@ -1,0 +1,7 @@
+# Repository-level ignores
+# Ignore environment files
+.env
+.env.*
+
+# Node modules (optional, if you want to ignore at root)
+node_modules/

@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Base Styles */
+body {
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-gray-100;
+}
