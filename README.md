@@ -1,52 +1,167 @@
-# Document Management System (DMS)
+# 📁 Document Management System (DMS)
 
-Hi, and welcome to my Document Management System project! 👋
+A full-stack **Document Management System** built using the **MEAN Stack** that enables users to securely upload, organize, search, and manage documents with role-based permissions and version control.
 
-I built this project because I wanted to understand what actually goes on under the hood of tools like Google Drive or Dropbox. It's easy to take things like "uploading a file" or "sharing a folder" for granted, but I realized there's a lot of interesting complexity when you try to build it yourself.
 
-This isn't just a "CRUD app" — it was a playground for me to figure out how to handle real-world problems like file stream handling, user permissions, and making a UI that doesn't feel clunky.
+---
 
-## Why I Built This
-I wanted to challenge myself to move beyond simple tutorials and build something that feels "real."
-- **Authentication**: I didn't just want a login screen; I wanted to understand how secure tokens actually work.
-- **File Handling**: Uploading an image is one thing, but managing PDFs, versions, and secure downloads is a different beast.
-- **UX First**: My goal was to make the app feel responsive. You shouldn't have to refresh the page to see your new file.
+## 🚀 Features
 
-## Challenges I Crossed Along the Way
-It wasn't smooth sailing! Here are a few things that stumped me (and how I solved them):
+### 🔐 Authentication & Authorization
+- User Registration and Login
+- JWT-based Authentication
+- Role-Based Access Control (Admin / User)
 
-1.  **The "Infinite Loading" Spinner**:
-    *   *The Problem*: When I first added the profile page, navigating to it would sometimes leave the spinner spinning forever.
-    *   *The Fix*: I realized Angular was reusing the component instance, so my data fetching logic needed to run on navigation events, not just initialization. It taught me a lot about the Angular lifecycle.
+### 📄 Document Management
+- Upload documents (PDF, Images, etc.)
+- Rename documents
+- Tag and categorize files
+- Folder-like structure (Google Drive style)
+- Version control to track document updates
+- Inline preview for PDFs and Images
 
-2.  **File Permissions are Hard**:
-    *   *The Problem*: It's easy to hide a "Delete" button from a non-admin, but what if they just Curl the API endpoint?
-    *   *The Fix*: I had to implement a robust permission check on the backend `documentController.js`. Now, every request checks `req.user.role` before touching the file system.
+### 🔍 Search & Filter
+- Search documents by name
+- Filter documents using tags
 
-3.  **State Management**:
-    *   Keeping the file list in sync when you upload a new document without refreshing the page was tricky. I ended up using Observables to make the UI react instantly to data changes.
+### 👤 User Profile
+- View total uploaded files
+- View total storage used
+- Real-time profile synchronization
 
-## How to Run It
-If you want to take it for a spin, here's how to get it running on your local machine.
+### 🎨 UI / UX
+- Fully responsive web pages
+- Modern UI using Tailwind CSS
+- Dark / Light mode support
+- Inline modals instead of pop-ups
 
-### The Backend (Node/Express)
-The engine room.
-1.  Navigate to `backend/`.
-2.  Install the gears: `npm install`.
-3.  You'll need a `.env` file with your MongoDB string (ask me if you need a template!).
-4.  Fire it up: `npm run dev`.
+---
 
-### The Frontend (Angular)
-The dashboard.
-1.  Navigate to `frontend/`.
-2.  Install dependencies: `npm install`.
-3.  Launch it: `npm start`.
-4.  Open `http://localhost:4200` and you're in!
+## 🏗️ Tech Stack
 
-## Future Ideas
-There are still a few things I'd love to add when I have time:
-- [ ] **Drag and Drop**: For easier uploads.
-- [ ] **File Previews**: Viewing PDFs directly in the browser without downloading.
-- [ ] **Dark Mode**: Because every app needs a dark mode, right?
+| Layer      | Technology |
+|-----------|------------|
+| Frontend  | Angular (v21+), Tailwind CSS |
+| Backend   | Node.js, Express.js |
+| Database  | MongoDB Atlas |
+| Auth      | JWT (JSON Web Tokens) |
+| Uploads   | Multer |
 
-Thanks for checking out my code! fast-forwarding through the bugs and learning a ton along the way. 🚀
+---
+
+## 📂 Project Structure
+
+Document-management-system/
+
+│
+
+├── backend/
+
+│ ├── controllers/
+
+│ ├── models/
+
+│ ├── routes/
+
+│ ├── middleware/
+
+│ ├── uploads/
+
+│ ├── server.js
+
+│ └── .env
+
+│
+├── frontend/
+
+│ ├── src/app/
+
+│ │ ├── components/
+
+│ │ ├── services/
+
+│ │ ├── guards/
+
+│ │ └── app.routes.ts
+
+│ └── angular.json
+
+│
+
+└── README.md
+
+
+---
+
+## ⚙️ Prerequisites
+
+Ensure the following are installed on your system:
+
+| Software | Version |
+|--------|---------|
+| Node.js | v18.x or later |
+| npm | v9.x or later |
+| Angular CLI | v17+ |
+| MongoDB | MongoDB Atlas |
+| Git | Latest |
+
+---
+
+## 🔧 Local Setup Instructions
+
+### 1️⃣ Clone the Repository
+``` bash
+git clone https://github.com/Venkatreddy111/Document-management-system.git
+
+cd Document-management-system
+```
+
+🖥️ Backend Setup
+2️⃣ Navigate to Backend Folder
+``` bash
+cd backend
+```
+3️⃣ Install Backend Dependencies
+``` bash
+npm install
+```
+
+4️⃣ Create .env File
+``` bash
+PORT=5000
+
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/dms
+
+JWT_SECRET=your_jwt_secret
+```
+
+⚠️ Make sure your IP address is allowed in
+MongoDB Atlas → Network Access
+
+5️⃣ Start Backend Server
+``` bash
+npm start
+```
+
+Backend will run at:
+``` bash
+http://localhost:5000
+```
+🌐 Frontend Setup
+6️⃣ Navigate to Frontend Folder
+``` bash
+cd ../frontend
+```
+7️⃣ Install Frontend Dependencies
+``` bash
+npm install
+```
+8️⃣ Start Angular Application
+``` bash
+ng serve
+```
+
+Frontend will run at:
+``` bash
+http://localhost:4200
+```
