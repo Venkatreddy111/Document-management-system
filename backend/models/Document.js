@@ -12,6 +12,10 @@ const DocumentSchema = new mongoose.Schema({
     fileType: {
         type: String
     },
+    size: {
+        type: Number,
+        required: true
+    },
     folder: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Folder',

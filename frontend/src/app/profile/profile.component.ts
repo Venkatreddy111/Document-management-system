@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { ProfileService } from '../services/profile.service';
 import { AuthService } from '../services/auth.service';
 
@@ -13,7 +14,7 @@ import { AuthService } from '../services/auth.service';
     styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-    user: any = { id: '', name: '', email: '', role: '', avatar: '' };
+    user: any = { id: '', name: '', email: '', role: '', avatar: '', totalFiles: 0, totalStorage: 0 };
     profileData = { name: '', email: '', avatar: '', currentPassword: '', newPassword: '', confirmPassword: '' };
     showCurrentPassword = false;
     showNewPassword = false;
@@ -29,9 +30,20 @@ export class ProfileComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        // Initial load via Auth Service (usually handles page refresh)
         this.authService.user$.subscribe(user => {
             if (user) {
                 this.user.id = user.id;
+                this.loadProfile();
+            }
+        });
+
+        // Trigger load on Navigation (handles client-side routing)
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe(() => {
+            // Re-check auth or just reload if we have a user ID
+            if (this.user.id) {
                 this.loadProfile();
             }
         });
@@ -46,7 +58,8 @@ export class ProfileComponent implements OnInit {
 
         this.loading = true;
         this.error = null;
-        this.profileService.getProfile(this.user.id).subscribe({
+        // Fetch the latest profile data to ensure stats are accurate
+        this.profileService.loadUserProfile(this.user.id).subscribe({
             next: (data) => {
                 this.user = { ...this.user, ...data };
                 this.profileData.name = data.name;
@@ -57,6 +70,9 @@ export class ProfileComponent implements OnInit {
             error: (err) => {
                 console.error('Failed to load profile:', err);
                 this.error = 'Failed to sync details. Please check your connection.';
+                this.loading = false;
+            },
+            complete: () => {
                 this.loading = false;
             }
         });
@@ -114,5 +130,13 @@ export class ProfileComponent implements OnInit {
                 this.loading = false;
             }
         });
+    }
+
+    formatSize(bytes: number): string {
+        if (!bytes) return '0 MB';
+        const mb = bytes / (1024 * 1024);
+        return mb < 1024
+            ? `${mb.toFixed(2)} MB`
+            : `${(mb / 1024).toFixed(2)} GB`;
     }
 }

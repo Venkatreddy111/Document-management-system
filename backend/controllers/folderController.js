@@ -87,6 +87,26 @@ exports.getFolderTree = async (req, res) => {
     }
 };
 
+// RENAME FOLDER
+exports.renameFolder = async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name) return res.status(400).json({ error: 'Name is required' });
+
+        const folder = await Folder.findByIdAndUpdate(
+            req.params.id,
+            { name },
+            { new: true }
+        );
+
+        if (!folder) return res.status(404).json({ error: 'Folder not found' });
+
+        res.json(folder);
+    } catch (err) {
+        res.status(500).json({ error: 'Rename failed' });
+    }
+};
+
 // DELETE FOLDER (Recursive)
 exports.deleteFolder = async (req, res) => {
     try {

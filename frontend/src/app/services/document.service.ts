@@ -15,7 +15,9 @@ export class DocumentService {
         };
     }
 
-    upload(data: FormData) {
+    // We're passing FormData because we need to handle the file blob directly
+    // This allows Angular to set the correct multipart/form-data boundary automatically
+    processNewFileUpload(data: FormData) {
         return this.http.post(`${this.API}/upload`, data, this.getHeaders());
     }
 
@@ -44,5 +46,9 @@ export class DocumentService {
         // filePath in DB is something like 'uploads\filename.ext'
         const normalizedPath = path.replace(/\\/g, '/');
         return `http://localhost:5000/${normalizedPath}`;
+    }
+
+    rename(id: string, title: string) {
+        return this.http.put(`${this.API}/${id}/rename`, { title }, this.getHeaders());
     }
 }

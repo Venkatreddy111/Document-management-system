@@ -43,4 +43,8 @@ export class FolderService {
     deleteFolder(id: string): Observable<any> {
         return this.http.delete(`${this.API}/${id}`, this.getHeaders());
     }
+
+    rename(id: string, name: string): Observable<any> {
+        return this.http.put(`${this.API}/${id}/rename`, { name }, this.getHeaders());
+    }
 }

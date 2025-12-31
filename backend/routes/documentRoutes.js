@@ -6,23 +6,28 @@ const upload = require('../middleware/uploadMiddleware');
 const loadDocument = require('../middleware/loadDocument');
 const { canView, canEdit } = require('../middleware/permissionMiddleware');
 const {
-    uploadDocument,
-    getDocuments,
-    searchDocuments,
+    handleNewDocumentUpload,
+    fetchAllDocuments,
+    findUserDocuments,
     updateDocument,
     updatePermissions,
-    deleteDocument
+    deleteDocument,
+    renameDocument
 } = require('../controllers/documentController');
 
+// Rename document
+router.put('/:id/rename', authMiddleware, renameDocument);
+
 // Search documents
-router.get('/search', authMiddleware, searchDocuments);
+router.get('/search', authMiddleware, findUserDocuments);
 
 // Upload document
 router.post(
     '/upload',
     authMiddleware,
     upload.single('file'),
-    uploadDocument
+    upload.single('file'),
+    handleNewDocumentUpload
 );
 
 // Get single document (View Permission)
@@ -69,6 +74,6 @@ router.put(
 router.delete('/:id', authMiddleware, deleteDocument);
 
 // Get all documents
-router.get('/', authMiddleware, getDocuments);
+router.get('/', authMiddleware, fetchAllDocuments);
 
 module.exports = router;

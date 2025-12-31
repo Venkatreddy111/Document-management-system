@@ -6,10 +6,12 @@ const {
     getFolderContents,
     getBreadcrumbs,
     getFolderTree,
-    deleteFolder
+    deleteFolder,
+    renameFolder
 } = require('../controllers/folderController');
 
 router.post('/', authMiddleware, createFolder);
+router.put('/:id/rename', authMiddleware, renameFolder);
 router.get('/tree', authMiddleware, getFolderTree);
 router.delete('/:id', authMiddleware, deleteFolder);
 router.get('/:id', authMiddleware, getFolderContents);

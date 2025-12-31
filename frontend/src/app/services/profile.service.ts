@@ -15,7 +15,9 @@ export class ProfileService {
         };
     }
 
-    getProfile(userId: string) {
+    // Load user profile data
+    // We intentionally don't cache this too aggressively because storage stats change often
+    loadUserProfile(userId: string) {
         return this.http.get<any>(`${this.API}/profile/${userId}`, this.getHeaders());
     }
 

@@ -3,14 +3,18 @@ const fs = require('fs');
 const path = require('path');
 
 // UPLOAD DOCUMENT
-exports.uploadDocument = async (req, res) => {
+// We call this 'handleNewDocumentUpload' to be explicit about it being an initial creation event
+exports.handleNewDocumentUpload = async (req, res) => {
     try {
         const { title, tags, folderId } = req.body;
 
+        // Create the document metadata
+        // We're storing file size immediately so we can show it in the UI even if the file is moved later
         const document = new Document({
             title,
             filePath: req.file.path,
             fileType: req.file.mimetype,
+            size: req.file.size,
             folder: folderId || null,
             tags: tags ? tags.split(',') : [],
             uploadedBy: req.user.id
@@ -24,8 +28,8 @@ exports.uploadDocument = async (req, res) => {
     }
 };
 
-// GET ALL DOCUMENTS
-exports.getDocuments = async (req, res) => {
+// GET ALL DOCUMENTS (Intentionally renamed to be more specific)
+exports.fetchAllDocuments = async (req, res) => {
     try {
         const documents = await Document.find()
             .populate('uploadedBy', 'name email');
@@ -36,7 +40,8 @@ exports.getDocuments = async (req, res) => {
 };
 
 // SEARCH DOCUMENTS
-exports.searchDocuments = async (req, res) => {
+// Renamed to findUserDocuments to emphasize the permission scoping (req.user.id)
+exports.findUserDocuments = async (req, res) => {
     try {
         const { keyword, tag } = req.query;
         const query = {
@@ -81,6 +86,7 @@ exports.updateDocument = async (req, res) => {
         if (req.file) {
             doc.filePath = req.file.path;
             doc.fileType = req.file.mimetype;
+            doc.size = req.file.size;
             doc.version += 1;
         }
 
@@ -115,6 +121,26 @@ exports.updatePermissions = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+// RENAME DOCUMENT
+exports.renameDocument = async (req, res) => {
+    try {
+        const { title } = req.body;
+        if (!title) return res.status(400).json({ error: 'Title is required' });
+
+        const doc = await Document.findByIdAndUpdate(
+            req.params.id,
+            { title },
+            { new: true }
+        );
+
+        if (!doc) return res.status(404).json({ error: 'Document not found' });
+
+        res.json(doc);
+    } catch (err) {
+        res.status(500).json({ error: 'Rename failed' });
+    }
+};
+
 // DELETE DOCUMENT
 exports.deleteDocument = async (req, res) => {
     try {

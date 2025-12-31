@@ -110,10 +110,69 @@ export class ListComponent implements OnInit {
         }
     }
 
+    // Inline Rename State
+    editingId: string | null = null;
+    newName: string = '';
+
+    startRename(item: any, type: 'folder' | 'document') {
+        this.editingId = item._id;
+        this.newName = type === 'folder' ? item.name : item.title;
+
+        // Auto-focus logic
+        setTimeout(() => {
+            const input = document.getElementById('renameInput-' + item._id) as HTMLInputElement;
+            if (input) {
+                input.focus();
+                input.select();
+            }
+        }, 50);
+    }
+
+    cancelRename() {
+        this.editingId = null;
+        this.newName = '';
+    }
+
+    saveRename(item: any, type: 'folder' | 'document') {
+        if (!this.newName.trim() || this.newName === (type === 'folder' ? item.name : item.title)) {
+            this.cancelRename();
+            return;
+        }
+
+        if (type === 'folder') {
+            this.folderService.rename(item._id, this.newName).subscribe({
+                next: () => {
+                    item.name = this.newName;
+                    this.cancelRename();
+                    this.folderService.notifyFolderChanged();
+                },
+                error: (err) => {
+                    console.error('Rename failed', err);
+                    alert('Failed to rename folder');
+                    this.cancelRename(); // Optional: keep edit mode on error?
+                }
+            });
+        } else {
+            this.documentService.rename(item._id, this.newName).subscribe({
+                next: () => {
+                    item.title = this.newName;
+                    this.cancelRename();
+                },
+                error: (err) => {
+                    console.error('Rename failed', err);
+                    alert('Failed to rename document');
+                    this.cancelRename();
+                }
+            });
+        }
+    }
+
     closeDeleteModal() {
         this.showDeleteModal = false;
         this.itemToDelete = null;
     }
+
+    // Previous openRename removed in favor of inline logic
 
     search() {
         if (this.keyword) {

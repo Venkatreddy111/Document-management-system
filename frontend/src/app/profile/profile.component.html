@@ -94,11 +94,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
                         <p class="text-xs text-indigo-100">Files Uploaded</p>
-                        <p class="text-2xl font-bold mt-1">128</p>
+                        <p class="text-2xl font-bold mt-1">{{ user.totalFiles || 0 }}</p>
                     </div>
                     <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
                         <p class="text-xs text-indigo-100">Storage Used</p>
-                        <p class="text-2xl font-bold mt-1">4.2GB</p>
+                        <p class="text-2xl font-bold mt-1">{{ formatSize(user.totalStorage || 0) }}</p>
                     </div>
                 </div>
             </div>

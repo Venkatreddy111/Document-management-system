@@ -15,7 +15,19 @@ exports.getProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        res.json(user);
+
+        // Calculate stats
+        const Document = require('../models/Document');
+        const documents = await Document.find({ uploadedBy: userId });
+
+        const totalFiles = documents.length;
+        const totalStorage = documents.reduce((sum, doc) => sum + (doc.size || 0), 0);
+
+        res.json({
+            ...user.toObject(),
+            totalFiles,
+            totalStorage
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -16,7 +16,8 @@ export class UploadComponent implements OnInit {
     title = '';
     tags = '';
     file: File | null = null;
-    folderId: string | null = null;
+    folderId: string = '';
+    message: string = ''; // Used for user feedback
 
     constructor(
         private documentService: DocumentService,
@@ -38,7 +39,7 @@ export class UploadComponent implements OnInit {
         this.file = event.target.files[0];
     }
 
-    upload() {
+    submitUploadForm() {
         if (!this.file || !this.title) {
             alert('Please select file and title');
             return;
@@ -52,9 +53,12 @@ export class UploadComponent implements OnInit {
             formData.append('folderId', this.folderId);
         }
 
-        this.documentService.upload(formData).subscribe({
-            next: (res) => {
-                alert('Uploaded successfully');
+        // Send the file to the backend
+        // We subscribe here to handle success/error and update the UI accordingly
+        this.documentService.processNewFileUpload(formData).subscribe({
+            next: (event: any) => {
+                // Success! Give the user some feedback
+                this.message = 'File uploaded successfully! redirecting...';
                 this.router.navigate(['/documents']);
             },
             error: (err) => {
